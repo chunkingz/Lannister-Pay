@@ -122,7 +122,6 @@ const checkFeeEntity = (FeeEntity) => {
  * spec: This is used to define specificity. It refers to any of the valid payment entity properties. 
  * supported values: String | *
  * @param {string} EntityProperty 
- * @returns {string}
 */
 const checkEntityProperty = (EntityProperty) => {
     if(EntityProperty.trim().length > 0 || EntityProperty == '*') {
@@ -137,7 +136,6 @@ const checkEntityProperty = (EntityProperty) => {
  * spec: The type of the fee that defines how it is applied.
  * supported values: FLAT | PERC | FLAT_PERC
  * @param {string} FeeType 
- * @returns {string}
 */
 const checkFeeType = (FeeType) => {
     const entity = ['FLAT', 'PERC', 'FLAT_PERC']
@@ -153,7 +151,6 @@ const checkFeeType = (FeeType) => {
  * spec: The value of the fee to be applied.
  * supported values: Numbers > 0
  * @param {string} FeeValue 
- * @returns {string}
 */
 const checkFeeValue = (FeeValue) => {
     if(FeeValue.includes(':')) {
@@ -170,6 +167,10 @@ const checkFeeValue = (FeeValue) => {
     }
 }
 
+/**
+ * Captures any FCS error and returns
+ * @returns Array[]
+ */
 const errorsArr = () => {
     return errors
 }

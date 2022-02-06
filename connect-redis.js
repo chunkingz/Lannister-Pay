@@ -11,7 +11,6 @@ const client = redis.createClient(REDIS_PORT)
  * @param {any} fullData 
  */
 const connectRedis = async (FCScomparisonData, fullData) => {
-  // console.log(FCScomparisonData[0]);
 
   await client.PING().then(
     async () => {
@@ -26,8 +25,6 @@ const connectRedis = async (FCScomparisonData, fullData) => {
 }
 
 const saveData = async (FCScomparisonData, fullData) => {
-
-  // console.log(FCScomparisonData);
 
     // store data in Redis
     await client.SET('feeCurrency', FCScomparisonData[0]);

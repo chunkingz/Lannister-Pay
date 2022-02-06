@@ -20,7 +20,6 @@ const computeTransactionFee = (req, res) => {
             "Error": "No fee configuration for USD transactions."
         })
     } else {
-        // console.log([Amount, Currency, CurrencyCountry, Customer, PaymentEntity])
         getData([Amount, Currency, CurrencyCountry, Customer, PaymentEntity])
 
         const total = {

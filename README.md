@@ -70,4 +70,4 @@ Type `npm run dev` for a dev server. Open Postman and nav using the POST verb to
 
 ---
 
-- :bowtie: yours truly
+:bowtie: yours truly
