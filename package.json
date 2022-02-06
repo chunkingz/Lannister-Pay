@@ -1,0 +1,23 @@
+{
+  "name": "LannisterPay",
+  "version": "1.0.0",
+  "description": "LannisterPay",
+  "repository": "github.com/chunkingz/LannisterPay",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index",
+    "start": "node index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Fortune King",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.2",
+    "express-validator": "^6.14.0",
+    "redis": "^4.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
