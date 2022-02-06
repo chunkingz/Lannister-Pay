@@ -33,7 +33,7 @@ Type `npm run dev` for a dev server. Open Postman and nav using the POST verb to
 
 ## Sample Payload to test /fees :rocket:
 
-```
+``` json
 {
   "FeeConfigurationSpec": "LNPY1221 NGN * *(*) : APPLY PERC 1.4\nLNPY1222 NGN INTL CREDIT-CARD(VISA) : APPLY PERC 5.0\nLNPY1223 NGN LOCL CREDIT-CARD(*) : APPLY FLAT_PERC 50:1.4\nLNPY1224 NGN * BANK-ACCOUNT(*) : APPLY FLAT 100\nLNPY1225 NGN * USSD(MTN) : APPLY PERC 0.55"
 }
@@ -44,7 +44,7 @@ Type `npm run dev` for a dev server. Open Postman and nav using the POST verb to
 
 ## Sample Payload to test /compute-transaction-fee :fire:
 
-```
+``` json
 {
     "ID": 91203,
     "Amount": 5000,
