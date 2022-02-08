@@ -1,4 +1,3 @@
-
 let errors = []
 
 /**
@@ -7,14 +6,6 @@ let errors = []
  */
 const fcsValidator = (args) => {
     let fcsData = []
-    let feeID = ''
-    let feeCurrency = ''
-    let feeLocale = ''
-    let feeEntity = ''
-    let entityProperty = ''
-    let feeType = ''
-    let feeValue = ''
-
     let compareFeeCurrency = []
     let compareFeeLocale = []
     let compareFeeEntity = []
@@ -26,12 +17,8 @@ const fcsValidator = (args) => {
     for(let j=0 ; j < fcsData.length ; j++){
         fcsData[j].splice(4, 2)
 
-        feeID += ' ' + checkFeeID(fcsData[j][0])
-
-        feeCurrency += ' ' + checkFeeCurrency(fcsData[j][1])
         compareFeeCurrency.push(fcsData[j][1])
 
-        feeLocale += ' ' + checkFeeLocale(fcsData[j][2])
         compareFeeLocale.push(fcsData[j][2])
 
 
@@ -39,16 +26,10 @@ const fcsValidator = (args) => {
         let myArray1 = FeeEntity.split("(");
         let myArray2 = myArray1[1].split(")");
 
-        feeEntity += ' ' + checkFeeEntity(myArray1[0])
         compareFeeEntity.push(myArray1[0])
 
-        entityProperty += ' ' + checkEntityProperty(myArray2[0])
         compareEntityProperty.push(myArray2[0])
 
-
-        feeType += ' ' + checkFeeType(fcsData[j][4])
-
-        feeValue += ' ' + checkFeeValue(fcsData[j][5])
     }
 
     return [ compareFeeCurrency, compareFeeLocale, compareFeeEntity, compareEntityProperty ]
@@ -60,7 +41,9 @@ const fcsValidator = (args) => {
  * @param {string} FeeID 
 */
 const checkFeeID = (FeeID) => {
-    if(!(FeeID.length == 8 &&  /^(LNPY)/gmi.test(FeeID))) {
+    if(FeeID.length == 8 &&  /^(LNPY)/gmi.test(FeeID)) {
+        //console.log(`FeeID is valid`)
+    } else {
         errors.push(`${FeeID} is not valid`)
     }
 }
@@ -72,7 +55,9 @@ const checkFeeID = (FeeID) => {
  * @param {string} FeeCurrency 
 */
 const checkFeeCurrency = (FeeCurrency) => {
-    if(!((FeeCurrency.length == 3 &&  /^(NGN)/gmi.test(FeeCurrency)) || FeeCurrency == '*')) {
+    if((FeeCurrency.length == 3 &&  /^(NGN)/gmi.test(FeeCurrency)) || FeeCurrency == '*') {
+        //console.log(`FeeCurrency is valid`)
+    } else {
         errors.push(`${FeeCurrency} is not valid`)
     }
 }
@@ -85,7 +70,9 @@ const checkFeeCurrency = (FeeCurrency) => {
 */
 const checkFeeLocale = (FeeLocale) => {
     const locale = ['LOCL', 'INTL', '*']
-    if(!(locale.includes(FeeLocale))) {
+    if(locale.includes(FeeLocale)) {
+        //console.log(`FeeLocale is valid`)
+    } else {
         errors.push(`${FeeLocale} is not valid`)
     }
 
@@ -99,7 +86,9 @@ const checkFeeLocale = (FeeLocale) => {
 */
 const checkFeeEntity = (FeeEntity) => {
     const entity = ['CREDIT-CARD', 'DEBIT-CARD', 'BANK-ACCOUNT', 'USSD', 'WALLET-ID', '*']
-    if(!(entity.includes(FeeEntity))) {
+    if(entity.includes(FeeEntity)) {
+        //console.log(`FeeEntity is valid`)
+    } else {
         errors.push(`${FeeEntity} is not valid`)
     }
 }
@@ -111,7 +100,9 @@ const checkFeeEntity = (FeeEntity) => {
  * @param {string} EntityProperty 
 */
 const checkEntityProperty = (EntityProperty) => {
-    if((EntityProperty.trim().length > 0 || EntityProperty == '*')) {
+    if(EntityProperty.trim().length > 0 || EntityProperty == '*') {
+        //console.log(`EntityProperty is valid`)
+    } else {
         errors.push(`${EntityProperty} is not valid`)
     }
 }
@@ -124,7 +115,9 @@ const checkEntityProperty = (EntityProperty) => {
 */
 const checkFeeType = (FeeType) => {
     const entity = ['FLAT', 'PERC', 'FLAT_PERC']
-    if(!(entity.includes(FeeType))) {
+    if(entity.includes(FeeType)) {
+        //console.log(`FeeType is valid`)
+    } else {
         errors.push(`${FeeType} is not valid`)
     }
 }
