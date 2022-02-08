@@ -6,7 +6,8 @@
   "scripts": {
     "predev": "redis-server --daemonize yes",
     "dev": "nodemon index || exit 0",
-    "start": "node index",
+    "prestart": "redis-server --daemonize yes",
+    "start": "node index || exit 0",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
