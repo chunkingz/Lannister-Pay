@@ -5,16 +5,19 @@ const REDIS_PORT = process.env.REDIS_PORT || 6379
 let client = ''
 let errors = []
 
-
-if (process.env.REDISCACHEHOSTNAME) {
-  // In prod check for redis azure connection
-  client = redis.createClient(6380, process.env.REDISCACHEHOSTNAME,
-    {auth_pass: process.env.REDISCACHEKEY, tls: {servername: process.env.REDISCACHEHOSTNAME}});
-    console.log('online');
-} else {
-  client = redis.createClient(REDIS_PORT)
-  console.log('off-line');
+const conn = async () => {
+  if (process.env.REDISCACHEHOSTNAME) {
+    // In prod check for redis azure connection
+    client = await redis.createClient(6380, process.env.REDISCACHEHOSTNAME,
+      {auth_pass: process.env.REDISCACHEKEY, tls: {servername: process.env.REDISCACHEHOSTNAME}});
+      console.log('online');
+  } else {
+    client = await redis.createClient(REDIS_PORT)
+    console.log('off-line');
+  }
+  return client
 }
+
 
 
 /**
@@ -23,15 +26,19 @@ if (process.env.REDISCACHEHOSTNAME) {
  * @param {any} fullData 
  */
 const connectRedis = async (FCScomparisonData, fullData) => {
+  let client2 = await conn()
 
-  await client.PING().then(
+  await client2.PING().then(
     async () => {
+      console.log('works');
       saveData(FCScomparisonData, fullData)
     }, 
     async () => {
+      console.log('nope');
       client.on('error', (err) => console.log('Redis Client Error', err));
-      await client.connect();
+      await client2.connect();
       saveData(FCScomparisonData, fullData)
+      console.log('saving...');
     })
 
 }
