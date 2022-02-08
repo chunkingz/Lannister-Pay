@@ -6,6 +6,14 @@ let errors = []
  */
 const fcsValidator = (args) => {
     let fcsData = []
+    let feeID = ''
+    let feeCurrency = ''
+    let feeLocale = ''
+    let feeEntity = ''
+    let entityProperty = ''
+    let feeType = ''
+    let feeValue = ''
+
     let compareFeeCurrency = []
     let compareFeeLocale = []
     let compareFeeEntity = []
@@ -16,9 +24,14 @@ const fcsValidator = (args) => {
     }
     for(let j=0 ; j < fcsData.length ; j++){
         fcsData[j].splice(4, 2)
+        // console.log(fcsData[j]);
 
+        feeID += ' ' + checkFeeID(fcsData[j][0])
+
+        feeCurrency += ' ' + checkFeeCurrency(fcsData[j][1])
         compareFeeCurrency.push(fcsData[j][1])
 
+        feeLocale += ' ' + checkFeeLocale(fcsData[j][2])
         compareFeeLocale.push(fcsData[j][2])
 
 
@@ -26,13 +39,23 @@ const fcsValidator = (args) => {
         let myArray1 = FeeEntity.split("(");
         let myArray2 = myArray1[1].split(")");
 
+        feeEntity += ' ' + checkFeeEntity(myArray1[0])
         compareFeeEntity.push(myArray1[0])
 
+        entityProperty += ' ' + checkEntityProperty(myArray2[0])
         compareEntityProperty.push(myArray2[0])
 
+
+        feeType += ' ' + checkFeeType(fcsData[j][4])
+
+        feeValue += ' ' + checkFeeValue(fcsData[j][5])
     }
 
+    // console.log('\n');
+    // console.log(compareFeeCurrency, compareFeeLocale, compareFeeEntity, compareEntityProperty);
+
     return [ compareFeeCurrency, compareFeeLocale, compareFeeEntity, compareEntityProperty ]
+    // return [ feeID, feeCurrency, feeLocale, feeEntity, entityProperty, feeType, feeValue ]
 }
 
 /**
