@@ -1,23 +1,26 @@
 const redis = require('redis');
 
-const REDIS_PORT = process.env.REDIS_PORT || 6379
+const REDIS_PORT = process.env.REDIS_PORT
 
 let client = ''
 let errors = []
 
-const conn = async () => {
-  if (process.env.REDISCACHEHOSTNAME) {
-    // In prod check for redis azure connection
-    client = await redis.createClient(6380, process.env.REDISCACHEHOSTNAME,
-      {auth_pass: process.env.REDISCACHEKEY, tls: {servername: process.env.REDISCACHEHOSTNAME}});
-      console.log('online');
-  } else {
-    client = await redis.createClient(REDIS_PORT)
-    console.log('off-line');
-  }
-  return client
+const redisConf = {
+  host: process.env.REDISCACHEHOSTNAME,
+  port: process.env.REDIS_PORT,
+  password: process.env.REDISCACHEKEY
 }
 
+  if (process.env.REDISCACHEHOSTNAME) {
+    /* 
+    * In prod check for Azure Cache for Redis connection
+    * https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/cache-nodejs-get-started
+    */
+    client = redis.createClient(redisConf)
+  } else {
+    // fall back to local connection
+    client = redis.createClient(REDIS_PORT)
+  }
 
 
 /**
@@ -26,19 +29,16 @@ const conn = async () => {
  * @param {any} fullData 
  */
 const connectRedis = async (FCScomparisonData, fullData) => {
-  let client2 = await conn()
 
-  await client2.PING().then(
+  await client.PING().then(
     async () => {
-      console.log('works');
       saveData(FCScomparisonData, fullData)
     }, 
     async () => {
-      console.log('nope');
       client.on('error', (err) => console.log('Redis Client Error', err));
-      await client2.connect();
+      client = redis.createClient(REDIS_PORT)
+      await client.connect();
       saveData(FCScomparisonData, fullData)
-      console.log('saving...');
     })
 
 }
@@ -64,6 +64,7 @@ let finalResponse = ''
       }, 
       async () => {
         client.on('error', (err) => console.log('Redis Client Error', err));
+        client = redis.createClient(REDIS_PORT)
         await client.connect();
         finalResponse = await getAndCompare(payload)
       })

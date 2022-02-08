@@ -73,5 +73,15 @@ Type `npm run dev` for a dev server. Open Postman and nav using the POST verb to
 ```
 
 ---
+<br>
+
+## Screenshots :camera_flash:
+
+```
+cd screenshots/
+``` 
+
+
+---
 
 :bowtie: yours truly
