@@ -24,7 +24,6 @@ const fcsValidator = (args) => {
     }
     for(let j=0 ; j < fcsData.length ; j++){
         fcsData[j].splice(4, 2)
-        // console.log(fcsData[j]);
 
         feeID += ' ' + checkFeeID(fcsData[j][0])
 
@@ -51,11 +50,7 @@ const fcsValidator = (args) => {
         feeValue += ' ' + checkFeeValue(fcsData[j][5])
     }
 
-    // console.log('\n');
-    // console.log(compareFeeCurrency, compareFeeLocale, compareFeeEntity, compareEntityProperty);
-
     return [ compareFeeCurrency, compareFeeLocale, compareFeeEntity, compareEntityProperty ]
-    // return [ feeID, feeCurrency, feeLocale, feeEntity, entityProperty, feeType, feeValue ]
 }
 
 /**
