@@ -6,12 +6,14 @@ let client = ''
 let errors = []
 
 
-if (process.env.REDISTOGO_URL) {
+if (process.env.REDISCACHEHOSTNAME) {
   // In prod check for redis azure connection
   client = redis.createClient(6380, process.env.REDISCACHEHOSTNAME,
     {auth_pass: process.env.REDISCACHEKEY, tls: {servername: process.env.REDISCACHEHOSTNAME}});
+    console.log('online');
 } else {
   client = redis.createClient(REDIS_PORT)
+  console.log('off-line');
 }
 
 
