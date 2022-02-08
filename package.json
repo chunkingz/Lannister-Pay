@@ -2,10 +2,10 @@
   "name": "LannisterPay",
   "version": "1.0.0",
   "description": "LannisterPay",
-  "repository": "github.com/chunkingz/LannisterPay",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index",
+    "predev": "redis-server --daemonize yes",
+    "dev": "nodemon index || exit 0",
     "start": "node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,5 +18,9 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/chunkingz/LannisterPay"
   }
 }

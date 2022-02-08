@@ -1,5 +1,5 @@
 const express = require('express');
-const {getData} = require('./connect-redis');
+const {getData, errorsArr} = require('./connect-redis');
 
 const app = express();
 app.use(express.json());
@@ -9,7 +9,7 @@ app.use(express.json());
  * @param {any} req 
  * @param {any} res 
  */
-const computeTransactionFee = (req, res) => {
+const computeTransactionFee = async (req, res) => {
     console.log('Fee computation endpoint')
 
     const transactionPayload = req.body
@@ -20,18 +20,20 @@ const computeTransactionFee = (req, res) => {
             "Error": "No fee configuration for USD transactions."
         })
     } else {
-        getData([Amount, Currency, CurrencyCountry, Customer, PaymentEntity])
+        let finalResponse = await getData([Amount, Currency, CurrencyCountry, Customer, PaymentEntity])
 
-        const total = {
-            "AppliedFeeID": "LNPY0222",
-            "AppliedFeeValue": 230,
-            "ChargeAmount": 5230,
-            "SettlementAmount": 5000
+        // check to make sure the FCS data is valid
+        if(errorsArr().length > 0) {
+            res.status(400).send({
+                "error": errorsArr()
+            })
+        } else {
+            res.status(200).send(finalResponse)
         }
-        res.status(200).send({
-            "data": total,
-            "transaction payload": transactionPayload
-        })
+  
+        // reset the errors array to avoid duplication
+        errorsArr().length = 0
+
     }
 }
 

@@ -30,7 +30,6 @@ const fees = (req, res) => {
     } else {
       res.status(200).send({
         "status": "ok",
-        "data": fcs,
       })
     }
 

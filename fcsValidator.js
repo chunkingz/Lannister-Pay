@@ -25,7 +25,6 @@ const fcsValidator = (args) => {
     }
     for(let j=0 ; j < fcsData.length ; j++){
         fcsData[j].splice(4, 2)
-        // console.log(fcsData[j]);
 
         feeID += ' ' + checkFeeID(fcsData[j][0])
 
@@ -52,11 +51,7 @@ const fcsValidator = (args) => {
         feeValue += ' ' + checkFeeValue(fcsData[j][5])
     }
 
-    // console.log('\n');
-    // console.log(compareFeeCurrency, compareFeeLocale, compareFeeEntity, compareEntityProperty);
-
     return [ compareFeeCurrency, compareFeeLocale, compareFeeEntity, compareEntityProperty ]
-    // return [ feeID, feeCurrency, feeLocale, feeEntity, entityProperty, feeType, feeValue ]
 }
 
 /**
@@ -65,9 +60,7 @@ const fcsValidator = (args) => {
  * @param {string} FeeID 
 */
 const checkFeeID = (FeeID) => {
-    if(FeeID.length == 8 &&  /^(LNPY)/gmi.test(FeeID)) {
-        //console.log(`FeeID is valid`)
-    } else {
+    if(!(FeeID.length == 8 &&  /^(LNPY)/gmi.test(FeeID))) {
         errors.push(`${FeeID} is not valid`)
     }
 }
@@ -79,9 +72,7 @@ const checkFeeID = (FeeID) => {
  * @param {string} FeeCurrency 
 */
 const checkFeeCurrency = (FeeCurrency) => {
-    if((FeeCurrency.length == 3 &&  /^(NGN)/gmi.test(FeeCurrency)) || FeeCurrency == '*') {
-        //console.log(`FeeCurrency is valid`)
-    } else {
+    if(!((FeeCurrency.length == 3 &&  /^(NGN)/gmi.test(FeeCurrency)) || FeeCurrency == '*')) {
         errors.push(`${FeeCurrency} is not valid`)
     }
 }
@@ -94,9 +85,7 @@ const checkFeeCurrency = (FeeCurrency) => {
 */
 const checkFeeLocale = (FeeLocale) => {
     const locale = ['LOCL', 'INTL', '*']
-    if(locale.includes(FeeLocale)) {
-        //console.log(`FeeLocale is valid`)
-    } else {
+    if(!(locale.includes(FeeLocale))) {
         errors.push(`${FeeLocale} is not valid`)
     }
 
@@ -110,9 +99,7 @@ const checkFeeLocale = (FeeLocale) => {
 */
 const checkFeeEntity = (FeeEntity) => {
     const entity = ['CREDIT-CARD', 'DEBIT-CARD', 'BANK-ACCOUNT', 'USSD', 'WALLET-ID', '*']
-    if(entity.includes(FeeEntity)) {
-        //console.log(`FeeEntity is valid`)
-    } else {
+    if(!(entity.includes(FeeEntity))) {
         errors.push(`${FeeEntity} is not valid`)
     }
 }
@@ -124,9 +111,7 @@ const checkFeeEntity = (FeeEntity) => {
  * @param {string} EntityProperty 
 */
 const checkEntityProperty = (EntityProperty) => {
-    if(EntityProperty.trim().length > 0 || EntityProperty == '*') {
-        //console.log(`EntityProperty is valid`)
-    } else {
+    if((EntityProperty.trim().length > 0 || EntityProperty == '*')) {
         errors.push(`${EntityProperty} is not valid`)
     }
 }
@@ -139,9 +124,7 @@ const checkEntityProperty = (EntityProperty) => {
 */
 const checkFeeType = (FeeType) => {
     const entity = ['FLAT', 'PERC', 'FLAT_PERC']
-    if(entity.includes(FeeType)) {
-        //console.log(`FeeType is valid`)
-    } else {
+    if(!(entity.includes(FeeType))) {
         errors.push(`${FeeType} is not valid`)
     }
 }

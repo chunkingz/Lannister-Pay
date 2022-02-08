@@ -2,7 +2,18 @@ const redis = require('redis');
 
 const REDIS_PORT = process.env.REDIS_PORT || 6379
 
-const client = redis.createClient(REDIS_PORT)
+let client = ''
+let errors = []
+
+
+if (process.env.REDISTOGO_URL) {
+  // In prod check for heroku redistogo connection
+  let rtg   = require("url").parse(process.env.REDISTOGO_URL);
+  client = redis.createClient(rtg.port, rtg.hostname);
+  redis.auth(rtg.auth.split(":")[1]);
+} else {
+  client = redis.createClient(REDIS_PORT)
+}
 
 
 /**
@@ -37,17 +48,19 @@ const saveData = async (FCScomparisonData, fullData) => {
 }
 
 const getData = async (payload) => {
+let finalResponse = ''
 
     await client.PING().then(
       async () => {
-        getAndCompare(payload)
+        finalResponse = await getAndCompare(payload)
       }, 
       async () => {
         client.on('error', (err) => console.log('Redis Client Error', err));
         await client.connect();
-        getAndCompare(payload)
+        finalResponse = await getAndCompare(payload)
       })
  
+      return finalResponse
 }
 
 const getAndCompare = async (payload) => {
@@ -72,12 +85,6 @@ const getAndCompare = async (payload) => {
   entityProperty = entityProperty.split(',')
 
 
-  // console.log(feeCurrency);
-  // console.log(feeLocale);
-  console.log(feeEntity);
-  console.log(entityProperty);
-
-
   let feeEntityIndex = []
   // check to see which of the FEE-ENTITY matches the Payment Entity type
   feeEntity.forEach((item, index) => {
@@ -85,7 +92,6 @@ const getAndCompare = async (payload) => {
       feeEntityIndex.push(index)
     }
   })
-  console.log(feeEntityIndex);
 
   let entityPropertyIndex = []
   // check to see which of the ENTITY-PROPERTY matches the Payment Entity
@@ -94,12 +100,10 @@ const getAndCompare = async (payload) => {
       entityPropertyIndex.push(index)
     }
   })
-  console.log(entityPropertyIndex);
 
   // check to make sure the array indexes match, remove those that don't
   const matchingIndex = entityPropertyIndex.filter(n => feeEntityIndex.includes(n))
 
-  console.log(matchingIndex);
 
   correctFeeEntityFCS = []
   correctEntityPropertyFCS = []
@@ -114,21 +118,63 @@ const getAndCompare = async (payload) => {
         correctEntityPropertyFCS.push(matchingIndex[i])
       }
     }
-  } else {
+  } else if(matchingIndex.length == 1){
     correctFeeEntityFCS.push(matchingIndex.toString())
     correctEntityPropertyFCS.push(matchingIndex.toString())
+  } else {
+    errors.push("No applicable fee configuration spec was found.")
+    return
   }
-
-  // console.log(correctFeeEntityFCS);
-  // console.log(correctEntityPropertyFCS);
 
   let fullFCS = await getFullFCS()
 
+  let correctData = ''
+
   if(correctFeeEntityFCS.length > 0){
-    console.log(fullFCS[correctFeeEntityFCS])
+    correctData = fullFCS[correctFeeEntityFCS]
   } else {
-    console.log(fullFCS[correctEntityPropertyFCS])
+    correctData = fullFCS[correctEntityPropertyFCS]
   }
+
+
+  let appliedFeeValue = ''
+  let appliedFeeID = correctData.split(" ")[0]
+  let feeType = correctData.split(" ")[6]
+  let feeValue = correctData.split(" ")[7]
+  let chargeAmount = ''
+  let settlementAmount = ''
+
+
+  if(feeType == 'FLAT'){
+    appliedFeeValue = feeValue + amount
+  }
+
+  if(feeType == 'PERC'){
+    appliedFeeValue = (feeValue / 100).toFixed(3) * amount
+  }
+
+  if(feeType == 'FLAT_PERC'){
+    const fv_flat = parseInt(feeValue.split(':')[0])
+    const fv_perc = parseFloat(feeValue.split(':')[1])
+    appliedFeeValue = fv_flat + ((fv_perc / 100).toFixed(3) * amount)
+  }
+
+  if(customer.BearsFee){
+    chargeAmount = amount + appliedFeeValue
+  } else {
+    chargeAmount = amount
+  }
+
+  settlementAmount = chargeAmount - appliedFeeValue
+
+  const finalValues = {
+    "AppliedFeeID": appliedFeeID, 
+    "AppliedFeeValue": appliedFeeValue, 
+    "ChargeAmount": chargeAmount, 
+    "SettlementAmount": settlementAmount
+  }
+
+  return finalValues
 
 }
 
@@ -138,5 +184,12 @@ const getFullFCS = async () => {
   return fullData
 }
 
+/**
+ * Captures any FCS error and returns
+ * @returns Array[]
+ */
+ const errorsArr = () => {
+  return errors
+}
 
-module.exports = {connectRedis, saveData, getData}
+module.exports = {connectRedis, saveData, getData, errorsArr}
