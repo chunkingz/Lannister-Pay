@@ -7,10 +7,9 @@ let errors = []
 
 
 if (process.env.REDISTOGO_URL) {
-  // In prod check for heroku redistogo connection
-  let rtg   = require("url").parse(process.env.REDISTOGO_URL);
-  client = redis.createClient(rtg.port, rtg.hostname);
-  redis.auth(rtg.auth.split(":")[1]);
+  // In prod check for redis azure connection
+  client = redis.createClient(6380, process.env.REDISCACHEHOSTNAME,
+    {auth_pass: process.env.REDISCACHEKEY, tls: {servername: process.env.REDISCACHEHOSTNAME}});
 } else {
   client = redis.createClient(REDIS_PORT)
 }

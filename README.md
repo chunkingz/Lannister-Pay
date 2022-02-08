@@ -20,6 +20,10 @@ git clone https://github.com/chunkingz/Lannister-Pay.git
 cd Lannister-Pay
 ``` 
 
+```
+npm i
+``` 
+
 
 ---
 <br>

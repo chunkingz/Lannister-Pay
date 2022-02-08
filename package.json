@@ -1,19 +1,19 @@
 {
-  "name": "LannisterPay",
+  "name": "lannister-pay",
   "version": "1.0.0",
   "description": "LannisterPay",
   "main": "index.js",
   "scripts": {
     "predev": "redis-server --daemonize yes",
     "dev": "nodemon index || exit 0",
-    "prestart": "redis-server --daemonize yes",
-    "start": "node index || exit 0",
+    "start": "node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Fortune King",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.0",
     "express": "^4.17.2",
     "redis": "^4.0.3"
   },
